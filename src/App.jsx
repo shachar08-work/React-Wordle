@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { auth, provider } from "./firebase";
-import { signInWithPopup } from "firebase/auth";
 import GameSelection from "./pages/GameSelection";
 import WordleGame from "./pages/WordleGame";
 import MeduyeketGame from "./pages/MeduyeketGame";
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -19,11 +19,22 @@ export default function App() {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((u) => {
+  const unsubscribe = auth.onAuthStateChanged(async (u) => {
+    if (u) {
       setUser(u);
-    });
-    return () => unsubscribe();
-  }, []);
+    } else {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          setUser(result.user);
+        }
+      } catch (err) {
+        console.error("Redirect error:", err);
+      }
+    }
+  });
+  return () => unsubscribe();
+}, []);
 
   if (!user) {
     return (

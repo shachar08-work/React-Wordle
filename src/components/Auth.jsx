@@ -3,25 +3,24 @@ import React from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { signInWithPopup } from "firebase/auth";  // Import from SDK directly
 import { auth, provider, db } from "../firebase";
+import { signInWithPopup, signInWithRedirect } from "firebase/auth";
+
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
 export default function Auth({ setUser }) {
   const signInWithGoogle = async () => {
-    try {
+  try {
+    if (isIOS) {
+      await signInWithRedirect(auth, provider);
+    } else {
       const result = await signInWithPopup(auth, provider);
-      const loggedInUser = result.user;
-
-      await setDoc(doc(db, "users", loggedInUser.uid), {
-        email: loggedInUser.email,
-        name: loggedInUser.displayName,
-        lastLogin: new Date().toISOString(),
-      });
-
-      setUser(loggedInUser);
-    } catch (error) {
-      alert("שגיאה בכניסה עם גוגל");
-      console.error(error);
+      setUser(result.user);
     }
-  };
+  } catch (error) {
+    alert("שגיאה בכניסה עם גוגל");
+    console.error(error);
+  }
+};
 
   return (
     <div dir="rtl" className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-100">
