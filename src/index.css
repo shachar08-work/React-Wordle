@@ -5,3 +5,22 @@
 body {
   font-family: 'Alef', sans-serif;
 }
+
+@keyframes flip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(90deg);
+    /* Optional: color halfway flipped */
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+.animate-flip {
+  animation: flip 0.6s ease forwards;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}

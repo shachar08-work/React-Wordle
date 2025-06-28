@@ -1,12 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";  // Import Firestore
 
-
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyA2U3wDGQFVgxAZyTf8SClm9J6GC6f89Vw",
   authDomain: "wordle-skorall.firebaseapp.com",
@@ -17,12 +12,9 @@ const firebaseConfig = {
   measurementId: "G-V243NPC761"
 };
 
-
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
-const storage = getStorage(firebaseApp);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const db = getFirestore(app);  // Initialize Firestore
 
-export { auth, provider, storage, signInWithPopup };
-export default db;
+export { auth, provider, db };  // Export db along with auth and provider
