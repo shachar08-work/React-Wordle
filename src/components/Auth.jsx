@@ -5,20 +5,19 @@ const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 
 export default function Auth({ setUser }) {
   const signInWithGoogle = async () => {
-    try {
-      if (isIOS) {
-        // Redirect login for iOS devices
-        await signInWithRedirect(auth, provider);
-        // NO setUser here — it happens on redirect back
-      } else {
-        const result = await signInWithPopup(auth, provider);
-        setUser(result.user);
-      }
-    } catch (error) {
-      alert("שגיאה בכניסה עם גוגל: " + error.message);
-      console.error("שגיאת כניסה:", error);
+  try {
+    if (isIOS) {
+      await signInWithRedirect(auth, provider);
+      // Do NOT setUser here - wait for redirect handling on reload
+    } else {
+      const result = await signInWithPopup(auth, provider);
+      setUser(result.user);
     }
-  };
+  } catch (error) {
+    alert("שגיאה בכניסה עם גוגל: " + error.message);
+    console.error("שגיאת כניסה:", error);
+  }
+};
 
   return (
     <div dir="rtl" className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-100">

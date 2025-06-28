@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { getRedirectResult, onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import { getRedirectResult } from "firebase/auth";
 import GameSelection from "./pages/GameSelection";
 import WordleGame from "./pages/WordleGame";
 import MeduyeketGame from "./pages/MeduyeketGame";
@@ -11,35 +11,37 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [checkingRedirect, setCheckingRedirect] = useState(true);
 
-  // On mount, check if the user is returning from redirect login
   useEffect(() => {
+    // First: check if there's a redirect sign-in result
     getRedirectResult(auth)
       .then((result) => {
         if (result?.user) {
           setUser(result.user);
         }
       })
-      .catch((err) => {
-        console.error("Redirect error:", err);
+      .catch((error) => {
+        console.error("Redirect error:", error);
       })
       .finally(() => {
-        setCheckingRedirect(false);
+        setCheckingRedirect(false); // Done checking redirect result
       });
   }, []);
 
-  // Also listen for auth state changes (e.g., popup sign-in)
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((u) => {
-      if (u) setUser(u);
+    // After redirect check is done, subscribe to auth changes
+    if (checkingRedirect) return;
+
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
     });
     return () => unsubscribe();
-  }, []);
+  }, [checkingRedirect]);
 
   if (checkingRedirect) {
-    // Show a loading screen while checking redirect login result
+    // Show loading while processing redirect result
     return (
-      <div dir="rtl" className="flex items-center justify-center min-h-screen">
-        <p>טוען...</p>
+      <div dir="rtl" className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-100">
+        <h1 className="text-2xl font-semibold">טוען...</h1>
       </div>
     );
   }
