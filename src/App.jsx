@@ -46,6 +46,16 @@ export default function App() {
     );
   }
 
+  useEffect(() => {
+    // After redirect check is done, subscribe to auth changes
+    if (checkingRedirect) return;
+
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+    });
+    return () => unsubscribe();
+  }, []);
+
   if (!user) {
     return <Auth setUser={setUser} />;
   }
