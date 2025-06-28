@@ -1,7 +1,6 @@
 // src/components/Auth.jsx
 import React from "react";
 import { doc, setDoc } from "firebase/firestore";
-import { signInWithPopup } from "firebase/auth";  // Import from SDK directly
 import { auth, provider, db } from "../firebase";
 import { signInWithPopup, signInWithRedirect } from "firebase/auth";
 
@@ -24,7 +23,7 @@ export default function Auth({ setUser }) {
 
   return (
     <div dir="rtl" className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-100">
-      <h1 className="text-4xl font-bold mb-4">ברוכים הבאים לוורדעל</h1>
+      <h1 className="text-4xl font-bold mb-4">ברוכים הבאים ל'הארץ' הימני</h1>
       <button
         onClick={signInWithGoogle}
         className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700"
