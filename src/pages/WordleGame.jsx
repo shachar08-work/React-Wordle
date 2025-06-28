@@ -30,8 +30,6 @@ export default function WordleGame({ user }) {
         locked={locked}
         won={won}
       />
-
-      <Keyboard disabled={locked || won} colors={keyboardColors} />
     </div>
   );
 }
