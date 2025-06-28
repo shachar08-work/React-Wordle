@@ -7,8 +7,9 @@ export default function Auth({ setUser }) {
   const signInWithGoogle = async () => {
     try {
       if (isIOS) {
+        // Redirect login for iOS devices
         await signInWithRedirect(auth, provider);
-        setUser(result.user);
+        // NO setUser here — it happens on redirect back
       } else {
         const result = await signInWithPopup(auth, provider);
         setUser(result.user);
