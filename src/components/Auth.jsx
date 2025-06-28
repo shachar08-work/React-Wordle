@@ -1,7 +1,19 @@
 import { auth, provider } from "../firebase";
 import { signInWithPopup, signInWithRedirect } from "firebase/auth";
 
-const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+function iOS() {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.userAgent)
+}
+
+const isIOS = iOS();
 
 export default function Auth({ setUser }) {
   const signInWithGoogle = async () => {
