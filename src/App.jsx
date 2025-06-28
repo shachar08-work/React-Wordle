@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { getRedirectResult } from "firebase/auth";
-import { auth, provider } from "./firebase";
+import { auth } from "./firebase";
 import GameSelection from "./pages/GameSelection";
 import WordleGame from "./pages/WordleGame";
 import MeduyeketGame from "./pages/MeduyeketGame";
@@ -11,23 +10,20 @@ import Auth from "./components/Auth";
 export default function App() {
   const [user, setUser] = useState(null);
 
-  // 🔁 Handles redirect result (iOS/redirect users)
   useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          setUser(result.user);
+    const unsubscribe = auth.onAuthStateChanged(async (u) => {
+      if (u) {
+        setUser(u);
+      } else {
+        try {
+          const result = await getRedirectResult(auth);
+          if (result?.user) {
+            setUser(result.user);
+          }
+        } catch (err) {
+          console.error("Redirect error:", err);
         }
-      })
-      .catch((err) => {
-        console.error("Redirect error:", err);
-      });
-  }, []);
-
-  // 👂 Handles normal auth state changes (already logged in)
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((u) => {
-      if (u) setUser(u);
+      }
     });
     return () => unsubscribe();
   }, []);
