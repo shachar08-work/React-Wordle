@@ -1,18 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Keyboard from "./Keyboard";
 
 const FINAL_HEBREW_MAP = { כ: "ך", מ: "ם", נ: "ן", פ: "ף", צ: "ץ" };
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboardColors, locked, won }) {
+export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboardColors, locked, setLocked, won, status, setStatus }) {
   const [rows, setRows] = useState(Array(6).fill(null).map(() => Array(5).fill("")));
   const [results, setResults] = useState(Array(6).fill(null));
   const [attempt, setAttempt] = useState(0);
   const [revealedCount, setRevealedCount] = useState(0);
 
-  // ...handleKeyClick, handleBackspace here, or passed as props
+function getTodayDateString() {
+  const now = new Date();
+  console.log(now)
+  now.setHours(now.getHours() + 3); // UTC+3 Israel time
+  return now.toISOString().slice(0, 10); // yyyy-mm-dd
+}
 
+  useEffect(() => {
+    const playedDate = localStorage.getItem(`played_${user}`);
+    const today = getTodayDateString();
+
+    if (playedDate === today) {
+      setLocked(true);
+      setStatus(`${user.displayName} שיחקת כבר היום! מחר יום חדש`)
+      // setStatus("שיחקת כבר היום! נסה שוב מחר" + user.displayName);
+    } else {
+      setLocked(false);
+      setStatus("נחש את מילת היום!");
+    }
+  }, []);
+
+  const handleBackspace = () => {
+      setRows((prev) => {
+        const newRows = prev.map((r) => [...r]);
+        for (let i = 4; i >= 0; i--) {
+          if (newRows[attempt][i] !== "") {
+            newRows[attempt][i] = "";
+            break;
+          }
+        }
+        return newRows;
+      });
+    };
   
 
   const updateKeyboardColors = (guess, result) => {
@@ -42,8 +73,12 @@ export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboard
 
     let result = Array(5).fill("gray");
     const guessLetters = currentGuess.split("");
+    if (guessLetters[4] in FINAL_HEBREW_MAP) {
+      guessLetters[4] = FINAL_HEBREW_MAP[guessLetters[4]];
+    }
     const targetLetters = dailyWord.split("");
-
+    console.log(targetLetters);
+    console.log(guessLetters);
     for (let i = 0; i < 5; i++) {
       if (guessLetters[i] === targetLetters[i]) {
         result[i] = "green";
@@ -73,11 +108,21 @@ export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboard
       updateKeyboardColors(currentGuess.slice(0, i + 1), result.slice(0, i + 1));
       await delay(600);
     }
-
+    console.log(result)
+    
     if (result.every((c) => c === "green")) {
       // setWon, locked, status, localStorage updates here or lift these up via props/callbacks
+      //setWon(true);
+      //setLocked(true);
+      setStatus("ניצחת! 🎉");
+      setLocked(true);
+      localStorage.setItem(`played_${user}`, getTodayDateString());
     } else if (attempt >= 5) {
       // lock game, set status, etc.
+      //setLocked(true);
+      setStatus(`המשחק נגמר 😢, המילה הייתה: ${dailyWord}`);
+      setLocked(true);
+      localStorage.setItem(`played_${user}`, getTodayDateString());
     } else {
       setAttempt(attempt + 1);
       setRevealedCount(0);

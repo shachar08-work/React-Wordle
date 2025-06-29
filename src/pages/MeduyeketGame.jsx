@@ -14,8 +14,8 @@ export default function MeduyeketGame({ user }) {
     if (!user) return;
     const word = getMeduyeketWord();
     setDailyWord(word);
-    setStatus("נחש את מילת היום!");
-  }, [user]);
+    //setStatus("נחש את מילת היום!");
+  }, []);
 
   return (
     <div dir="rtl" className="p-4 flex flex-col items-center min-h-screen bg-slate-100">
@@ -28,7 +28,10 @@ export default function MeduyeketGame({ user }) {
         keyboardColors={keyboardColors}
         setKeyboardColors={setKeyboardColors}
         locked={locked}
+        setLocked={setLocked}
         won={won}
+        status={status}
+        setStatus={setStatus}
       />
     </div>
   );
