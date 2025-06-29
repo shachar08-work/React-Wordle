@@ -55,8 +55,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/select" />} />
         <Route path="/select" element={<GameSelection />} />
-        <Route path="/wordle" element={<WordleGame user={user+"!12"} />} />
-        <Route path="/meduyeket" element={<MeduyeketGame user={user+"!12"} />} />
+        <Route path="/wordle" element={<WordleGame user={user} />} />
+        <Route path="/meduyeket" element={<MeduyeketGame user={user} />} />
       </Routes>
     </Router>
   );
