@@ -6,6 +6,7 @@ import GameSelection from "./pages/GameSelection";
 import WordleGame from "./pages/WordleGame";
 import MeduyeketGame from "./pages/MeduyeketGame";
 import Auth from "./components/Auth";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -55,8 +56,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/select" />} />
         <Route path="/select" element={<GameSelection />} />
-        <Route path="/wordle" element={<WordleGame user={user} />} />
-        <Route path="/meduyeket" element={<MeduyeketGame user={user} />} />
+        <Route path="/wordle" element={<ProtectedRoute><WordleGame user={user} /></ProtectedRoute>} />
+        <Route path="/meduyeket" element={<ProtectedRoute><MeduyeketGame user={user} /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
