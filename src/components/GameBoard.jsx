@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Keyboard from "./Keyboard";
 
-const FINAL_HEBREW_MAP = { כ: "ך", מ: "ם", נ: "ן", פ: "ף", צ: "ץ" };
+const FINAL_HEBREW_MAP = { כ: "ך", מ: "ם", נ: "ן", פ: "ף", צ: "ץ", ך: "כ", ם: "מ", ן: "נ", ף: "פ", ץ: "צ" };
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboardColors, locked, setLocked, won, status, setStatus }) {
+export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboardColors, locked, setLocked, won, status, setStatus, gameName }) {
   const [rows, setRows] = useState(Array(6).fill(null).map(() => Array(5).fill("")));
   const [results, setResults] = useState(Array(6).fill(null));
   const [attempt, setAttempt] = useState(0);
@@ -19,7 +19,7 @@ function getTodayDateString() {
 }
 
   useEffect(() => {
-    const playedDate = localStorage.getItem(`played_${user}`);
+    const playedDate = localStorage.getItem(`played_${user}_${gameName}`);
     const today = getTodayDateString();
 
     if (playedDate === today) {
@@ -88,7 +88,7 @@ function getTodayDateString() {
     }
 
     for (let i = 0; i < 5; i++) {
-      if (guessLetters[i] !== null && targetLetters.includes(guessLetters[i])) {
+      if (guessLetters[i] !== null && (targetLetters.includes(guessLetters[i]) || targetLetters.includes(FINAL_HEBREW_MAP[guessLetters[i]]))) {
         result[i] = "yellow";
         targetLetters[targetLetters.indexOf(guessLetters[i])] = null;
       }
@@ -116,13 +116,13 @@ function getTodayDateString() {
       //setLocked(true);
       setStatus("ניצחת! 🎉");
       setLocked(true);
-      localStorage.setItem(`played_${user}`, getTodayDateString());
+      localStorage.setItem(`played_${user}_${gameName}`, getTodayDateString());
     } else if (attempt >= 5) {
       // lock game, set status, etc.
       //setLocked(true);
       setStatus(`המשחק נגמר 😢, המילה הייתה: ${dailyWord}`);
       setLocked(true);
-      localStorage.setItem(`played_${user}`, getTodayDateString());
+      localStorage.setItem(`played_${user}_${gameName}`, getTodayDateString());
     } else {
       setAttempt(attempt + 1);
       setRevealedCount(0);

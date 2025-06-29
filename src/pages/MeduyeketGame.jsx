@@ -14,7 +14,6 @@ export default function MeduyeketGame({ user }) {
     if (!user) return;
     const word = getMeduyeketWord();
     setDailyWord(word);
-    //setStatus("נחש את מילת היום!");
   }, []);
 
   return (
@@ -32,6 +31,7 @@ export default function MeduyeketGame({ user }) {
         won={won}
         status={status}
         setStatus={setStatus}
+        gameName={"meduyeket"}
       />
     </div>
   );

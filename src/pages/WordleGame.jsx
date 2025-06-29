@@ -14,7 +14,6 @@ export default function WordleGame({ user }) {
     if (!user) return;
     const word = getWordleWord();
     setDailyWord(word);
-    //setStatus("נחש את מילת היום!");
   }, []);
 
   return (
@@ -32,6 +31,7 @@ export default function WordleGame({ user }) {
         won={won}
         status={status}
         setStatus={setStatus}
+        gameName={"wordle"}
       />
     </div>
   );
