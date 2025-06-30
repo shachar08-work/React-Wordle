@@ -19,11 +19,10 @@ export default function Auth({ setUser }) {
   const signInWithGoogle = async () => {
   try {
     if (isIOS) {
-      await signInWithRedirect(auth, provider);
-    } else {
-      await signInWithPopup(auth, provider);
-      // no need to setUser here — onAuthStateChanged will handle it
-    }
+      await signInWithRedirect(auth, provider);  // iOS
+  } else {
+      await signInWithPopup(auth, provider);     // others
+  }
   } catch (error) {
     alert("שגיאה בכניסה עם גוגל: " + error.message);
   }

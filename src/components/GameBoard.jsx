@@ -13,7 +13,6 @@ export default function GameBoard({ dailyWord, user, keyboardColors, setKeyboard
 
 function getTodayDateString() {
   const now = new Date();
-  console.log(now)
   now.setHours(now.getHours() + 3); // UTC+3 Israel time
   return now.toISOString().slice(0, 10); // yyyy-mm-dd
 }
@@ -77,8 +76,7 @@ function getTodayDateString() {
       guessLetters[4] = FINAL_HEBREW_MAP[guessLetters[4]];
     }
     const targetLetters = dailyWord.split("");
-    console.log(targetLetters);
-    console.log(guessLetters);
+
     for (let i = 0; i < 5; i++) {
       if (guessLetters[i] === targetLetters[i]) {
         result[i] = "green";
@@ -108,7 +106,6 @@ function getTodayDateString() {
       updateKeyboardColors(currentGuess.slice(0, i + 1), result.slice(0, i + 1));
       await delay(600);
     }
-    console.log(result)
     
     if (result.every((c) => c === "green")) {
       // setWon, locked, status, localStorage updates here or lift these up via props/callbacks

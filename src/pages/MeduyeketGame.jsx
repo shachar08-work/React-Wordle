@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import GameBoard from "../components/GameBoard";
 import Keyboard from "../components/Keyboard";
 import { getMeduyeketWord } from "../wordManager";
+import { auth } from "../firebase";
+
 
 export default function MeduyeketGame({ user }) {
   const [dailyWord, setDailyWord] = useState("");

@@ -5,27 +5,40 @@ import { auth } from "./firebase";
 import GameSelection from "./pages/GameSelection";
 import WordleGame from "./pages/WordleGame";
 import MeduyeketGame from "./pages/MeduyeketGame";
-import ProtectedRoute from "./ProtectedRoute";
+import Auth from "./components/Auth";
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // for initial auth check
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-      } else {
-        setUser(null);
+    const checkAuth = async () => {
+      try {
+        // Get result from Google redirect login (only needed for iOS)
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          setUser(result.user);
+        }
+      } catch (err) {
+        console.error("Error handling redirect login:", err);
       }
-      setLoading(false);
-    });
 
-    return () => unsubscribe(); // cleanup on unmount
+      // Track future auth changes
+      const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        setUser(firebaseUser);
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    };
+
+    checkAuth();
   }, []);
 
-  if (loading) {
-    return <div>טוען...</div>; // show while auth is being restored
+
+  if (!user)
+  {
+    return <Auth setUser={setUser} />;
   }
 
   return (
@@ -33,16 +46,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/select" />} />
         <Route path="/select" element={<GameSelection />} />
-        <Route path="/wordle" element={
-          <ProtectedRoute user={user}>
-            <WordleGame user={user} />
-          </ProtectedRoute>
-        } />
-        <Route path="/meduyeket" element={
-          <ProtectedRoute user={user}>
-            <MeduyeketGame user={user} />
-          </ProtectedRoute>
-        } />
+        <Route path="/wordle" element={<WordleGame user={user} />} />
+        <Route path="/meduyeket" element={<MeduyeketGame user={user} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
