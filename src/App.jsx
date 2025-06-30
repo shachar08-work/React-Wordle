@@ -43,6 +43,7 @@ export default function App() {
             <MeduyeketGame user={user} />
           </ProtectedRoute>
         } />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
