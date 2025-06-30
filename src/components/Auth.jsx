@@ -20,16 +20,15 @@ export default function Auth({ setUser }) {
   try {
     if (isIOS) {
       await signInWithRedirect(auth, provider);
-      // Do NOT setUser here - wait for redirect handling on reload
     } else {
-      const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
+      await signInWithPopup(auth, provider);
+      // no need to setUser here — onAuthStateChanged will handle it
     }
   } catch (error) {
     alert("שגיאה בכניסה עם גוגל: " + error.message);
-    console.error("שגיאת כניסה:", error);
   }
 };
+
 
   return (
     <div dir="rtl" className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-100">
